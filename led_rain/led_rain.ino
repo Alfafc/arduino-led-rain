@@ -25,7 +25,7 @@
 const int LED_PINS[] = {3, 5, 6, 9, 10, 11};
 const int LEDS_QTY = sizeof(LED_PINS) / sizeof(LED_PINS[0]);
 const int DELAY = 1;
-const int TAIL_LONG = 2;
+const int TAIL_LONG = 3;
 
 // the setup function runs once when you press reset or power the board
 void setup() {
