@@ -22,33 +22,42 @@
   http://www.arduino.cc/en/Tutorial/Blink
 */
 
-const int PIN_FROM = 6;
-const int QTY = 6;
+const int LED_PINS[] = {3, 5, 6, 9, 10, 11};
+const int LEDS_QTY = sizeof(LED_PINS) / sizeof(LED_PINS[0]);
+const int DELAY = 1;
 
 // the setup function runs once when you press reset or power the board
 void setup() {
-  // initialize digital pin LED_BUILTIN as an output.
-  
-  for (int i = 0; i<QTY; i++){
-    pinMode(PIN_FROM + i, OUTPUT);
+  for (int i = 0; i < LEDS_QTY; i++){
+    pinMode(LED_PINS[i], OUTPUT);
   }
 }
 
 // the loop function runs over and over again forever
 void loop() {
-  
-  for (int i = 0; i<QTY; i++) {
-    int pin = PIN_FROM + i;
-    digitalWrite(pin, HIGH);   // turn the LED on (HIGH is the voltage level)
-    delay(100);                       // wait for a second
 
-    digitalWrite(PIN_FROM + ((i+1)%QTY), HIGH);   // turn the LED on (HIGH is the voltage level)
-    delay(20);
+  for (int currentLed = 0; currentLed < LEDS_QTY; currentLed++) {
     
-    digitalWrite(PIN_FROM + ((i+2)%QTY), HIGH);   // turn the LED on (HIGH is the voltage level)
-    delay(20);
+    int pin = LED_PINS[currentLed];
     
-    digitalWrite(pin, LOW);    // turn the LED off by making the voltage LOW  
+    ligthOn(pin, 2 * DELAY);   // turn the LED on (HIGH is the voltage level)
+    
+    delay(1 * DELAY);                       // wait for a second
+
+    ligthOff(pin, 3 * DELAY);    // turn the LED off by making the voltage LOW  
   }
- 
+}
+
+void ligthOn(int pin, int time){
+  for (int i = 0; i<=255; i++) {
+    analogWrite(pin, i); 
+    delay(time);
+  }
+}
+
+void ligthOff(int pin, int time){
+    for (int i = 255; i>=0; i--) {
+    analogWrite(pin, i); 
+    delay(time);
+  }
 }
