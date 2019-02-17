@@ -25,39 +25,67 @@
 const int LED_PINS[] = {3, 5, 6, 9, 10, 11};
 const int LEDS_QTY = sizeof(LED_PINS) / sizeof(LED_PINS[0]);
 const int DELAY = 1;
+const int TAIL_LONG = 2;
 
 // the setup function runs once when you press reset or power the board
 void setup() {
   for (int i = 0; i < LEDS_QTY; i++){
     pinMode(LED_PINS[i], OUTPUT);
   }
+
+  Serial.begin(9600);
 }
 
 // the loop function runs over and over again forever
 void loop() {
 
-  for (int currentLed = 0; currentLed < LEDS_QTY; currentLed++) {
-    
-    int pin = LED_PINS[currentLed];
-    
-    ligthOn(pin, 2 * DELAY);   // turn the LED on (HIGH is the voltage level)
-    
-    delay(1 * DELAY);                       // wait for a second
+  int previousLedON = 0;
+  for (int currentLedON = 0; currentLedON < LEDS_QTY; currentLedON++) {
+        
+    for (int i = 0; i < LEDS_QTY; i++) {
+      setIntensityFor(i, previousLedON, currentLedON, LEDS_QTY);
+    }
 
-    ligthOff(pin, 3 * DELAY);    // turn the LED off by making the voltage LOW  
+    previousLedON = currentLedON;
+    delay(1 * DELAY);
   }
+  
+//  setIntensityFor(0, 0, LEDS_QTY);
+  delay(1000);
 }
 
-void ligthOn(int pin, int time){
-  for (int i = 0; i<=255; i++) {
-    analogWrite(pin, i); 
-    delay(time);
-  }
+int setIntensityFor(int led, int previousLedON, int currentLedON, int total){
+  int previousValue = getIntensityFor(led, previousLedON, total);
+  int newValue = getIntensityFor(led, currentLedON, total);
+
+  Serial.println(previousLedON);
+  Serial.println(currentLedON);
+  Serial.println(led);
+  
+  Serial.println(previousValue);
+  Serial.println(newValue);
+  Serial.println(100000000);
+
+//  int i = previousValue;
+//  while (i !=  newValue) {
+//      analogWrite(LED_PINS[led], i); 
+//
+//      if(previousValue < newValue)
+//        i++;
+//      else
+//        i--;
+//      delay(20);
+//  }   
+ delay(1200);
+  analogWrite(LED_PINS[led], newValue);  
 }
 
-void ligthOff(int pin, int time){
-    for (int i = 255; i>=0; i--) {
-    analogWrite(pin, i); 
-    delay(time);
-  }
+int getIntensityFor(int led, int currentLedON, int total){  
+
+  int distance;
+  if(currentLedON >= led ) distance = currentLedON - led;
+  else return 0;
+//  else distance = (led - currentLedON + total) % total;
+
+  return 255 * (float) (min(distance, TAIL_LONG) / TAIL_LONG);
 }
